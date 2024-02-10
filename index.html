@@ -26,7 +26,7 @@ document.getElementById("dataForm").addEventListener("submit", function(event) {
         content: btoa(data) // Base64 encode the data
     };
 
-    // Send a POST request to create or update the file
+    // Send a PUT request to update the file on GitHub
     fetch("https://api.github.com/repos/yusuf9973/MyHotel/contents/data.json", {
         method: "PUT",
         headers: {
