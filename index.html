@@ -1,52 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Save Data to GitHub</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Data Saver</title>
 </head>
 <body>
-<h2>Save Data to GitHub</h2>
-<form id="dataForm">
-    <label for="data">Data:</label><br>
-    <textarea id="data" name="data" rows="4" cols="50"></textarea><br><br>
-    <button type="submit">Save</button>
-</form>
+    <h1>GitHub Data Saver</h1>
+    <button onclick="saveData()">Save Data</button>
 
-<script>
-document.getElementById("dataForm").addEventListener("submit", function(event) {
-    event.preventDefault();
-    
-    // Get the data from the form
-    var data = document.getElementById("data").value;
+    <script>
+        async function saveData() {
+            const data = { key1: 'value1', key2: 'value2' }; // Your data to be saved
 
-    // Create a file object
-    var file = {
-        message: "Add data",
-        content: btoa(data) // Base64 encode the data
-    };
+            const repoOwner = 'yusuf9973'; // Your GitHub username
+            const repoName = 'MyHotel'; // Your repository name
+            const filePath = 'data.json'; // Path to your data file in the repository
 
-    // Send a PUT request to update the file on GitHub
-    fetch("https://api.github.com/repos/yusuf9973/MyHotel/contents/data.json", {
-        method: "PUT",
-        headers: {
-            "Authorization": "token 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",
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(file)
-    })
-    .then(response => {
-        if (response.ok) {
-            alert("Data saved successfully!");
-        } else {
-            alert("Failed to save data. Status: " + response.status);
+            const accessToken = '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'; // Your personal access token
+
+            try {
+                const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: 'Update data.json',
+                        content: btoa(JSON.stringify(data)), // Encode data as base64
+                        sha: '', // Leave empty for creating a new file
+                    }),
+                });
+
+                if (response.ok) {
+                    console.log('Data saved successfully!');
+                } else {
+                    console.error('Error saving data:', response.statusText);
+                }
+            } catch (error) {
+                console.error('An error occurred:', error);
+            }
         }
-    })
-    .catch(error => {
-        console.error("Error:", error);
-        alert("An error occurred. Please try again later.");
-    });
-});
-</script>
+    </script>
 </body>
 </html>
